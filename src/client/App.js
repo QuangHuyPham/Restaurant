@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Route,
+  Switch
+} from 'react-router-dom';
 import './app.css';
-import ListRestaurent from './components/listRestaurant';
-import RouteUrl from './routers/routeUrl';
+
+import Home from './components/Home';
+import ListRestaurant from './components/listRestaurant';
+import RestaurantDetail from './components/restaurantDetail';
 
 export default class App extends Component {
-  state = { restaurants: [] };
-
-  componentDidMount() {
-    fetch('/api/restaurants')
-      .then(res => res.json())
-      .then(restaurants => this.setState({ restaurants }));
+  constructor(props) {
+    super(props);
+    this.state = { };
   }
-
   render() {
-    const { restaurants } = this.state;
     return (
-      <Router>
-        <div>
-          <ListRestaurent restaurants={restaurants}/>
-          <span>
-            <RouteUrl/>
-          </span>
-        </div>
-      </Router>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={Home}/>
+          <Route exact path="/restaurants" component={ListRestaurant}/>
+          <Route exact path="/restaurants/:id" component={RestaurantDetail}/>
+        </Switch>
+      </BrowserRouter>
     );
   }
 }

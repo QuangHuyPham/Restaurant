@@ -14,5 +14,5 @@ const knex = require('knex')({
     acquireConnectionTimeout: 12000,
     debug: false
   });
-  
+
   module.exports = knex;

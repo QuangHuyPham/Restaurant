@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 class ItemsRestaurant extends Component {
     render() {
-        const index = this.props.index;
-        const value = this.props.value;
+        const { index, value } = this.props;
+        if (value.id % 2 == 0) var color = '#ccc';
+        else color = 'while';
         return (
-            <tr>
-                <td>{index + 1}</td>
-                <Link to={"/restaurant"}><td>{value.name}</td></Link>
+            <tr style={{ backgroundColor: color }}>
+                <td><Link to={`/restaurants/${value.id}`}>{index + 1}</Link></td>
+                <td>{value.name}</td>
                 <td>{value.address}</td>
                 <td>{value.phone}</td>
             </tr>
         );
     }
 }
-
 export default ItemsRestaurant;
