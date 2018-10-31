@@ -9,6 +9,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
+// var jsonParser = bodyParser.json();
+// var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 app.use('/static', express.static('public'));
 app.get('/list/restaurants', (req, res) => {
@@ -17,28 +19,42 @@ app.get('/list/restaurants', (req, res) => {
         .catch(err => console.log(err));
 });
 
-app.post('/list/restaurants', (req, res) => {
+app.post('/insert/restaurants', (req, res) => {
     knex('info')
-        .insert(req.body)
-        .then(cnt => res.send(cnt))
+        .insert({
+            name: req.body.add_name,
+            address: req.body.add_address,
+            phone: req.body.add_phone,
+            codeRestaurant: req.body.add_codeRestaurant
+        })
+        .then(data => res.send(data))
         .catch(err => console.log(err));
+});
+
+app.delete('/delete/restaurants/:id', (req, res) => {
+    const id = req.params.id;
+    knex('foods')
+        .where('idFood', id)
+        .del()
+        .then(res.location('http://localhost:8080/restaurants/4'))
+        .then(data => res.send(data))
+        .catch(err => console.log(err))
 });
 
 app.get('/list/restaurants/:id', (req, res) => {
-    const i = req.params.id;
+    const id = req.params.id;
     knex('info')
-        .where({ id: i })
-        .join('foods', 'foods.codeRestaurant', 'info.codeRestaurant')
-        .then(data => res.send(data))
-        .catch(err => console.log(err));
-});
-
-app.delete('/list/restaurants/:id', (req, res) => {
-    const i = req.params.idFood;
-    knex('info')
-        .where('id', i)
-        .del()
-        .then(data => res.send(data))
+        .where({ id })
+        .then(info => {
+            info = info[0];
+            knex('foods')
+                .where('codeRestaurant', info.codeRestaurant)
+                .then(foods => res.send({
+                    info,
+                    foods
+                }))
+                .catch(err => console.log(err));
+        })
         .catch(err => console.log(err));
 });
 
